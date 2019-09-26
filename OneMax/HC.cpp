@@ -24,7 +24,6 @@ double HC::exe(vector<bool> bitstring, int runs, int iterators)
         initstring(bitstring);
         int time = iterators;
         int value = evaluate(bitstring);
-        printf("value = %d\n" ,value);
         while (time--)
         {
             bitchange(bitstring);

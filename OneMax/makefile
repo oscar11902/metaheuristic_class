@@ -7,10 +7,10 @@ main.o: main.cpp
 	g++ -c main.cpp
 
 HC.o: HC.h Common.o
-	g++ -c HC.cpp Common.o
+	g++  -c HC.cpp
 
 ES.o:ES.h Common.o
-	g++ -c ES.cpp Common.o
+	g++ -c ES.cpp
 
 Common.o:Common.h
 	g++ -c Common.cpp

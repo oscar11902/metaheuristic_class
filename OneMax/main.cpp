@@ -53,14 +53,14 @@ int main(int argc, char *argv[])
         }
     }
     bitstring.resize(length,false);
-    if(algorithm){
+    if(!algorithm){
         HC hc;
         avgresult = hc.exe(bitstring , runs , iterators);
     }else{
         ES es;
         avgresult = es.exe(bitstring , runs , iterators);
     }
-    //printf("length = %d\nruns = %d\niterators = %d\nalgorthm = %d\n" ,length , runs , iterators , algorithm );
+    printf("length = %d\nruns = %d\niterators = %d\nalgorthm = %d\n" ,length , runs , iterators , algorithm );
     printf("average result = %lf\n", avgresult);
     return 0;
 }
