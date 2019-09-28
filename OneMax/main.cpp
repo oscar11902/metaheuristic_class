@@ -10,9 +10,10 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     vector<bool> bitstring;
-    int runs = 30, iterators = 1000, length = 100;
+    int runs = 30, iterators = 1000, length = 100 , timelimit = 600;
     double avgresult = 0.0;
     int algorithm = 0;
+    bool timeout = false;
     srand(time(NULL));
     for (int i = 1; i < argc; i++)
     {
@@ -33,6 +34,14 @@ int main(int argc, char *argv[])
             case 'r':
                 i++;
                 runs = atoi(argv[i]);
+                break;
+            case 't':
+                i++;
+                timelimit = atoi(argv[i]);
+                break;
+            case 'o':
+                i++;
+                if(atoi(argv[i])>0)timeout = true;
                 break;
             case 'a':
                 i++;
@@ -58,9 +67,8 @@ int main(int argc, char *argv[])
         avgresult = hc.exe(bitstring , runs , iterators);
     }else{
         ES es;
-        avgresult = es.exe(bitstring , runs , iterators);
+        avgresult = es.exe(bitstring , timelimit , timeout);
     }
-    printf("length = %d\nruns = %d\niterators = %d\nalgorthm = %d\n" ,length , runs , iterators , algorithm );
-    printf("average result = %lf\n", avgresult);
+    printf("result = %.2lf\n", avgresult);
     return 0;
 }
