@@ -1,8 +1,8 @@
-#include "HC.h"
+#include "TS.h"
 
 using namespace std;
 
-double HC::exe(vector<bool> bitstring, int runs, int iterators)
+double TS::exe(int array_size, int runs, int iterators, vector<bool> bitstring)
 {
     double result = 0.0;
     int round = runs;
