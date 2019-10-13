@@ -1,4 +1,5 @@
 #include "SA.h"
+#include "Common.h"
 
 using namespace std;
 

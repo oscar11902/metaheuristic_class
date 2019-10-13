@@ -1,9 +1,12 @@
 #ifndef Com_C
 #define Com_C
 #include <vector>
-int evaluate(std::vector<bool>);
+
+using namespace std;
+
 double random_ratio();
-void clonestring(std::vector<bool>, std::vector<bool>);
-void bitchange(std::vector<bool>);
-void initstring(std::vector<bool>);
+int evaluate(vector<bool>);
+void clonestring(vector<bool>, vector<bool>);
+void bitchange(vector<bool>);
+void initstring(vector<bool>);
 #endif
