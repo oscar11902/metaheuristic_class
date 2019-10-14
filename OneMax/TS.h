@@ -3,12 +3,17 @@
 #include <iostream>
 #include <vector>
 #include "Common.h"
-class TS{
-    private:
-        std::vector<std::vector <bool>> Searched_Space;
-        bool vector_compare(std::vector <bool> ,std::vector <bool>);
-        bool space_search(std::vector<std::vector <bool>> , std::vector <bool>);
-    public:
-        double exe(int , int , int , std::vector <bool>);
+
+using namespace std;
+
+class TS
+{
+private:
+    vector<vector<bool>> Searched_Space;
+
+public:
+    double exe(int Array_Size, int runs, int iterator, vector<bool>bitstring);
+    bool vector_compare(vector<bool>, vector<bool>);
+    bool space_search(vector<bool>);
 };
 #endif

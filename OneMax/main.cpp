@@ -4,7 +4,7 @@
 #include "HC.h"
 #include "ES.h"
 #include "SA.h"
-//#include "TS.h"
+#include "TS.h"
 
 using namespace std;
 
@@ -45,8 +45,10 @@ int main(int argc, char *argv[])
                     break;
                 case 'S':
                     algorithm = 2;
+                    break;
                 case 'T':
                     algorithm = 3;
+                    break;
                 }
                 break;
             case 'l':
@@ -83,6 +85,11 @@ int main(int argc, char *argv[])
             case 'R':
                 i++;
                 ratio = atof(argv[i]);
+            //TS
+            case 'A':
+                i++;
+                Array_Size = atoi(argv[i]);
+                break;
             }
             break;
         default:
@@ -93,19 +100,33 @@ int main(int argc, char *argv[])
     switch (algorithm)
     {
     case 0:
+    {
         HC hc;
         avgresult = hc.exe(bitstring, runs, iterators);
-        break;
+    }
+
+    break;
     case 1:
+    {
         ES es;
         avgresult = es.exe(bitstring, timelimit, timeout);
-        break;
+    }
+
+    break;
     case 2:
+    {
         SA sa;
         avgresult = sa.exe(Start_Temp, End_Temp, runs, ratio, bitstring);
-        break;
+    }
+
+    break;
     case 3:
-        break;
+    {
+        TS ts;
+        avgresult = ts.exe(Array_Size, runs, iterators, bitstring);
+    }
+    break;
+
     default:
         break;
     }

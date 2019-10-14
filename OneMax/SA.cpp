@@ -37,6 +37,7 @@ double SA::exe(int ST, int ET, int runs, double ratio, vector<bool> bitstring)
                 clonestring(bitstring, tmpstring);
             }
             current_temp *= ratio;
+            //cout << value << endl;
         }
         result += value;
     }

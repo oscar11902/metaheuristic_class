@@ -1,5 +1,4 @@
 #include "HC.h"
-#include "Common.h"
 
 using namespace std;
 
