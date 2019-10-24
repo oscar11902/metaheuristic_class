@@ -5,6 +5,7 @@
 #include "ES.h"
 #include "SA.h"
 #include "TS.h"
+#include "GA.h"
 
 using namespace std;
 
@@ -23,6 +24,9 @@ int main(int argc, char *argv[])
     double ratio = 0.95;
     //TS
     int Array_Size = 7;
+    //GA
+    double mutation_rate = 1.0;
+    int num_of_gene = 10;
     srand(time(NULL));
     for (int i = 1; i < argc; i++)
     {
@@ -48,6 +52,9 @@ int main(int argc, char *argv[])
                     break;
                 case 'T':
                     algorithm = 3;
+                    break;
+                case 'G':
+                    algorithm = 4;
                     break;
                 }
                 break;
@@ -90,6 +97,15 @@ int main(int argc, char *argv[])
                 i++;
                 Array_Size = atoi(argv[i]);
                 break;
+            //GA
+            case 'm':
+                i++;
+                mutation_rate = atof(argv[i]);
+                break;
+            case 'n':
+                i++;
+                num_of_gene = atoi(argv[i]);
+                break;
             }
             break;
         default:
@@ -126,7 +142,11 @@ int main(int argc, char *argv[])
         avgresult = ts.exe(Array_Size, runs, iterators, bitstring);
     }
     break;
-
+    case 4:
+    {
+        GA ga;
+        avgresult = ga.exe(bitstring , runs , iterators , num_of_gene , mutation_rate , false);
+    }
     default:
         break;
     }

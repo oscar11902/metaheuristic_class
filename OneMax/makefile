@@ -1,19 +1,22 @@
 all:OneMax
 
-OneMax: main.o HC.o ES.o SA.o TS.o Common.o
-	g++ -Wall -o OneMax  main.o HC.o SA.o ES.o TS.o Common.o
+OneMax: main.o HC.o ES.o SA.o TS.o GA.o Common.o
+	g++ -ggdb -o OneMax  main.o HC.o SA.o ES.o TS.o GA.o Common.o
 
-main.o: main.cpp  HC.h ES.h SA.h
-
-HC.o:HC.cpp HC.h Common.h 
-
-ES.o:ES.cpp ES.h Common.h 
-
-Common.o:Common.cpp Common.h 
-
-SA.o:SA.cpp SA.h Common.h 
-
-TS.o:TS.cpp TS.h Common.h
+main.o: HC.h ES.h SA.h
+	g++ -ggdb -c main.cpp
+HC.o:Common.h 
+	g++ -ggdb -c HC.cpp
+ES.o:Common.h 
+	g++ -ggdb -c ES.cpp
+Common.o: 
+	g++ -ggdb -c Common.cpp
+SA.o:Common.h 
+	g++ -ggdb -c SA.cpp
+TS.o:Common.h
+	g++ -ggdb -c TS.cpp
+GA.o:GA.cpp GA.h Common.h
+	g++ -ggdb -c GA.cpp
 
 clean: 
 	rm -f *.o *.gch OneMax

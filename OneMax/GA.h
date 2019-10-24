@@ -11,9 +11,10 @@ class GA
 private:
     vector<vector<bool>> geneset;
     vector<int> valueset;
+    int number_of_each_set;
 public:
     double exe(vector<bool> bitstring, int run, int iterator, int num_gene, double mutation_rate , bool selection_method);
-    void selection_rotation();
+    void selection_roulette();
     void selection_(); 
     void crossover();
     void mutation(double mutation_rate); 
