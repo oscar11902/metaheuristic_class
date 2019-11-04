@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     double result = 0.0;
     //ACO
     int nant = 20;
-    double alpha = 0.8, beta = 0.1, q = 0.95;
+    double alpha = 1, beta = 3, q = 0.95;
     vector<double> x, y;
     const char *source;
     source = "test/eil51.txt";

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
+#include <string.h>
+#include <fstream>
 #include "Common.h"
 
 using namespace std;

@@ -28,3 +28,8 @@
 -A : 記憶長度 default 7
 
 ./OneMax -a TS -A 7 -r 10 -l 25 -i 100
+
+//GA
+-m : mutation rate default 1
+-n : 基因數量 default 10
+-b : selection method  0(輪盤) or 1(三選一))

@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
     //GA
     double mutation_rate = 1.0;
     int num_of_gene = 10;
+    bool selection_branch =false;
     srand(time(NULL));
     for (int i = 1; i < argc; i++)
     {
@@ -106,6 +107,11 @@ int main(int argc, char *argv[])
                 i++;
                 num_of_gene = atoi(argv[i]);
                 break;
+            case 'b':
+                i++;
+                if (atoi(argv[i]) > 0)
+                    selection_branch = true;
+                break;
             }
             break;
         default:
@@ -145,7 +151,7 @@ int main(int argc, char *argv[])
     case 4:
     {
         GA ga;
-        avgresult = ga.exe(bitstring , runs , iterators , num_of_gene , mutation_rate , false);
+        avgresult = ga.exe(bitstring , runs , iterators , num_of_gene , mutation_rate , selection_branch);
     }
     default:
         break;
