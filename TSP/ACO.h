@@ -27,6 +27,7 @@ private:
     vector<vector<double>> distance_table;
     vector<vector<double>> pheromone_table;
     vector<vector<double>> prefer_table;
+    vector<double>result_record;
     vector<Ant> ants;
     double ALPHA, BETA, Q, RO;
     int nCities , nAnts;
@@ -39,6 +40,7 @@ public:
     void update_pheromone_table();
     void show_distance_table();
     int select_next_city(Ant ant);
+    double count_distance(vector<int> path);
 };
 
 #endif

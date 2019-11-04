@@ -8,10 +8,9 @@ double ACO::exe(double alpha, double beta, vector<double> x, vector<double> y, i
     Q = q;
     nCities = x.size();
     nAnts = nant;
-    double result = 0.0;
-    string output ;
-    fstream   file;
-    
+    result_record.resize(iteration, 0.0);
+    string output;
+    fstream file;
     create_distance_table(x, y);
     for (int r = 0; r < run; r++)
     {
@@ -19,10 +18,14 @@ double ACO::exe(double alpha, double beta, vector<double> x, vector<double> y, i
         prefer_table.resize(nCities, vector<double>(nCities));
         double min = 9999999.9;
         Ant bestAnt;
-        output.append("Output_");
-        output.append(to_string(r+1));
-        output.append(".txt");
-        file.open(output , ios::out);
+        output = "output_a_";
+        output += to_string(alpha);
+        output += "_b_";
+        output += to_string(beta);
+        output += "_q_";
+        output += to_string(q);
+        output += ".txt";
+
         for (int i = 0; i < iteration; i++)
         {
 
@@ -39,19 +42,24 @@ double ACO::exe(double alpha, double beta, vector<double> x, vector<double> y, i
                     bestAnt.clone(ants[a]);
                 }
             }
-            file << i+1 <<" " <<bestAnt.total_distance << "\n";
+            result_record[i] += bestAnt.total_distance;
+            file << i + 1 << " " << bestAnt.total_distance << "\n";
             ants.clear();
             //cout << min << endl;
             //bestAnt.showpath();
         }
-        result += min;
         cout << "No.\t" << r + 1 << " Round:\t" << min << endl;
         pheromone_table.clear();
-        file.close();
-        output.clear();
     }
-    
-    return result / run;
+    file.open(output, ios::out);
+    for (int i = 0; i < iteration; i++)
+    {
+        result_record[i] /= run;
+        file << result_record[i] << "\n";
+    }
+
+    file.close();
+    return result_record[result_record.size() - 1];
 }
 void ACO::create_distance_table(vector<double> x, vector<double> y)
 {
@@ -60,7 +68,7 @@ void ACO::create_distance_table(vector<double> x, vector<double> y)
     {
         for (int j = i; j < nCities; j++)
         {
-            distance_table[i][j] = pow(pow(x[i] - x[j], 2) + pow(y[i] - y[j], 2),0.5);
+            distance_table[i][j] = pow(pow(x[i] - x[j], 2) + pow(y[i] - y[j], 2), 0.5);
             distance_table[j][i] = distance_table[i][j];
         }
     }
@@ -71,7 +79,7 @@ void ACO::update_prefer_table()
     {
         for (int j = i; j < nCities; j++)
         {
-            prefer_table[i][j] = pow(pheromone_table[i][j], ALPHA) * pow((1/distance_table[i][j]), BETA);
+            prefer_table[i][j] = pow(pheromone_table[i][j], ALPHA) * pow((1 / distance_table[i][j]), BETA);
             prefer_table[j][i] = prefer_table[i][j];
         }
     }
@@ -79,7 +87,7 @@ void ACO::update_prefer_table()
 void ACO::release_ant()
 {
     // Ant Move
-    int Start , next_point;
+    int Start, next_point;
     for (int a = 0; a < nAnts; a++)
     {
 
@@ -93,32 +101,31 @@ void ACO::release_ant()
             ants[a].visited[next_point] = true;
             Start = next_point;
         }
+        ants[a].total_distance = count_distance(ants[a].path);
         // 2 - opt
-        
-        int indexS , indexE , tmp;
-        indexS = rand()%nCities;
-        indexE = rand()%nCities;
-        if(indexS > indexE){
-            int limit = (indexS - indexE)>>1;
-            for(int i = 0 ; i < limit ; i++){
-                tmp = ants[a].path[indexE+i];
-                ants[a].path[indexE+i] = ants[a].path[indexS-i];
-                ants[a].path[indexS-i] = tmp;
-            }
-        }else{
-            int limit = (indexE - indexS)>>1;
-            for(int i = 0 ; i < limit ; i++){
-                tmp = ants[a].path[indexS+i];
-                ants[a].path[indexS+i] = ants[a].path[indexE-i];
-                ants[a].path[indexE-i] = tmp;
+        vector<int> tmp_path;
+        int tmp;
+        double tmp_distance;
+        for (int indexS = 1; indexS < nCities; indexS++)
+        {
+            for (int indexE = 0; indexE < indexS; indexE++)
+            {
+                tmp_path = ants[a].path;
+                int limit = (indexS - indexE) >> 1;
+                for (int i = 0; i < limit; i++)
+                {
+                    tmp = tmp_path[indexE + i];
+                    tmp_path[indexE + i] = tmp_path[indexS - i];
+                    tmp_path[indexS - i] = tmp;
+                }
+                tmp_distance = count_distance(tmp_path);
+                if (tmp_distance < ants[a].total_distance)
+                {
+                    ants[a].total_distance = tmp_distance;
+                    ants[a].path = tmp_path;
+                }
             }
         }
-        
-        //Count Distance
-        for(int i = 0 ; i < nCities -1 ; i++){
-            ants[a].total_distance += distance_table[ants[a].path[i]][ants[a].path[i+1]];
-        }
-        ants[a].total_distance += distance_table[ants[a].path[nCities-1]][ants[a].path[0]];
     }
 }
 void ACO::update_pheromone_table()
@@ -179,7 +186,7 @@ void ACO::show_distance_table()
     {
         for (double distance : list)
         {
-            printf("%-4.2f ",distance);
+            printf("%-4.2f ", distance);
         }
         cout << endl;
     }
@@ -205,4 +212,15 @@ void Ant::clone(Ant ant)
 {
     total_distance = ant.total_distance;
     path = ant.path;
+}
+
+double ACO::count_distance(vector<int> path)
+{
+    double total_distance = 0;
+    for (int i = 0; i < path.size() - 1; i++)
+    {
+        total_distance += distance_table[path[i]][path[i + 1]];
+    }
+    total_distance += distance_table[path[path.size() - 1]][path[0]];
+    return total_distance;
 }
