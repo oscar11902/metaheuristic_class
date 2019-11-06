@@ -10,3 +10,8 @@ TSP/output_a_2.000000_b_2.000000_q_0.900000.txt
 TSP/output_a_4.000000_b_2.000000_q_0.900000.txt
 *.o
 *.png
+TSP/output_a_1.000000_b_2.000000_q_0.800000.txt
+TSP/output_a_1.000000_b_2.000000_q_0.950000.txt
+TSP/output_a_1.000000_b_2.000000_q_1.000000.txt
+TSP/output_*.txt
+*.svg

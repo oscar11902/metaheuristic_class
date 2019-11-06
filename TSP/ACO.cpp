@@ -12,6 +12,8 @@ double ACO::exe(double alpha, double beta, vector<double> x, vector<double> y, i
     string output;
     fstream file;
     create_distance_table(x, y);
+    fstream pathfile;
+    pathfile.open("path.txt", ios::out);
     for (int r = 0; r < run; r++)
     {
         pheromone_table.resize(nCities, vector<double>(nCities, 0.1));
@@ -48,9 +50,15 @@ double ACO::exe(double alpha, double beta, vector<double> x, vector<double> y, i
             //cout << min << endl;
             //bestAnt.showpath();
         }
+
         cout << "No.\t" << r + 1 << " Round:\t" << min << endl;
         pheromone_table.clear();
+        for(int i = 0 ; i < bestAnt.path.size() ; i++){
+            pathfile << x[bestAnt.path[i]] << " " << y[bestAnt.path[i]] << "\n";
+        }
+        pathfile << bestAnt.total_distance << "\n";
     }
+    pathfile.close();
     file.open(output, ios::out);
     for (int i = 0; i < iteration; i++)
     {
