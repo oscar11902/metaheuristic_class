@@ -2,39 +2,36 @@
 
 using namespace std;
 
-double GA::exe(vector<bool> bitstring, int run, int iterator, int num_gene, double mutation_rate, bool selection_method)
+double GA::exe(vector<vector<double>> distance_table, double mutation, double crossover, int selection_method, int crossover_method, int runs, int iterators, int population)
 {
     double result = 0.0;
-    int round = run;
-    number_of_each_set = num_gene;
-    geneset.resize(num_gene, bitstring);
+    int round = runs;
+    this->population = population;
+    this->distance_table = distance_table;
+    this->mutation_rate = mutation;
+    this->crossover_rate = crossover;
+    this->selection_method = selection_method;
+
+    nCities = distance_table.size();
     while (round--)
     {
         //Initialize
         double round_result = 0.0;
         geneset.clear();
-        valueset.clear();
-        int time = iterator;
+        distanceset.clear();
+        geneset.resize(population, vector<int>(nCities, 0));
+        int time = iterators;
         //cout << "INIT START" << endl;
-        geneset.resize(num_gene, vector<bool>(bitstring.size(), false));
         for (int i = 0; i < geneset.size(); i++)
         {
-            initstring(geneset[i]);
+            initpath(geneset[i]);
         }
-        valueset.resize(num_gene);
-        evaluateset(geneset, valueset);
+        distanceset.resize(nCities, 0.0);
         //cout << "INIT FINISHED" << endl;
 
         while (time--)
         {
-            if (selection_method)
-            {
-                selection_roulette();
-            }
-            else
-            {
-                selection_();
-            }
+            selection();
             crossover();
             mutation(mutation_rate);
             evaluateset(geneset, valueset);
@@ -53,16 +50,16 @@ void GA::selection_roulette()
 {
     vector<double> gene_ratio;
     double sum = 0.0;
-    for (int value : valueset)
+    for (int value : distanceset)
     {
         sum += value;
     }
-    for (int i = 0; i < valueset.size(); i++)
+    for (int i = 0; i < population; i++)
     {
-        gene_ratio.push_back(valueset[i] / sum);
+        gene_ratio.push_back(distanceset[i] / sum);
     }
     vector<vector<bool>> new_geneset;
-    for (int i = 0; i < number_of_each_set; i++)
+    for (int i = 0; i < population; i++)
     {
         double flag = random_ratio();
         for (int j = 0; j < geneset.size(); j++)
@@ -78,54 +75,22 @@ void GA::selection_roulette()
     geneset.clear();
     geneset.assign(new_geneset.begin(), new_geneset.end());
 }
-void GA::selection_()
-{
-    vector<vector<bool>> new_geneset;
-    for (int i = 0; i < number_of_each_set; i++)
-    {
-        int max_index = -1;
-        int max_value = -1;
-        vector<bool> check_point(number_of_each_set, false);
-        for (int j = 0; j < 3; j++)
-        {
-            int index = random() % number_of_each_set;
-            while (check_point[index])
-            {
-                index = random() % number_of_each_set;
-            }
-            check_point[index] = true;
-            if(max_value < valueset[index]){
-                max_value = valueset[index];
-                max_index = index;
-            }
-        }
-        new_geneset.push_back(geneset[max_index]);
-    }
-    geneset.clear();
-    geneset.assign(new_geneset.begin(), new_geneset.end());
-}
-void GA::mutation(double mutation_rate)
+void GA::selection_random();
+void GA::crossover_PMX();
+void GA::crossover_CX();
+void GA::crossover_OX();
+void GA::mutation()
 {
     for (int i = 0; i < geneset.size(); i++)
     {
         if (random_ratio() < mutation_rate)
         {
-            int index = rand() % geneset[i].size();
-            geneset[i][index] = !geneset[i][index];
-        }
-    }
-}
-void GA::crossover()
-{
-    for (int i = 0; i < geneset.size(); i += 2)
-    {
-        //cout << geneset[i].size() <<" " << geneset[i+1].size() << " ";
-        int flag = rand() % geneset[i].size();
-        for (int j = flag; j < geneset[i].size(); j++)
-        {
-            bool tmp = geneset[i][j];
-            geneset[i][j] = geneset[i + 1][j];
-            geneset[i + 1][j] = tmp;
+            int point1 = rand()%nCities , point2 = rand()%nCities;
+            if(point1 > point2)swap(point1 , point2);
+            for(int index = 0 ; index < ((point1+point2)/2 - point1) ; index++){
+                swap(geneset[point1+index] , geneset[point2-index]);
+            }
+
         }
     }
 }

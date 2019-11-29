@@ -9,7 +9,7 @@ double ACO::exe(double alpha, double beta, vector<double> x, vector<double> y, i
     nCities = x.size();
     nAnts = nant;
     result_record.resize(iteration, 0.0);
-    string output;
+    char* output;
     fstream file;
     create_distance_table(x, y);
     fstream pathfile;
@@ -20,13 +20,7 @@ double ACO::exe(double alpha, double beta, vector<double> x, vector<double> y, i
         prefer_table.resize(nCities, vector<double>(nCities));
         double min = 9999999.9;
         Ant bestAnt;
-        output = "output_a_";
-        output += to_string(alpha);
-        output += "_b_";
-        output += to_string(beta);
-        output += "_q_";
-        output += to_string(q);
-        output += ".txt";
+        sprintf(output ,"Output_a_%lf_b_%lf_q_%lf.txt" , alpha , beta , q);
 
         for (int i = 0; i < iteration; i++)
         {
@@ -99,7 +93,7 @@ void ACO::release_ant()
     for (int a = 0; a < nAnts; a++)
     {
 
-        Start = random() % nCities;
+        Start = rand() % nCities;
         ants[a].path.push_back(Start);
         ants[a].visited[Start] = true;
         for (int i = 1; i < nCities; i++)

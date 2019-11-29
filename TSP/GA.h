@@ -9,15 +9,26 @@ using namespace std;
 class GA
 {
 private:
-    vector<vector<bool>> geneset;
-    vector<int> valueset;
-    int number_of_each_set;
+    vector<vector<int>> geneset;
+    vector<double> distanceset;
+    vector<vector<double>> distance_table;
+    int population;
+    int nCities;
+    int selection_method;
+    int crossover_method;
+    double mutation_rate;
+    double crossover_rate;
+
 public:
-    double exe(vector<bool> bitstring, int run, int iterator, int num_gene, double mutation_rate , bool selection_method);
-    void selection_roulette();
-    void selection_(); 
+    double exe(vector<vector<double>> distance_table, double mutation, double crossover, int selection_method, int crossover_method, int runs, int iterators, int population);
+    void selection();
     void crossover();
-    void mutation(double mutation_rate); 
+    void mutation();
+    void selection_roulette();
+    void selection_random();
+    void crossover_PMX();
+    void crossover_CX();
+    void crossover_OX();
 };
 
 #endif
