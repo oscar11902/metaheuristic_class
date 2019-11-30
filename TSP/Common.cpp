@@ -9,15 +9,26 @@ double random_ratio()
 
 double evaluate(vector<vector<double>> &distance_table, vector<int> &path)
 {
-    double total_distance = 0;
+    double total_distance = 0.0;
     int start_city, end_city;
+    cout << "EVALUEATION IN" << endl;
     for (int i = 0; i < distance_table.size() - 1; i++)
     {
         start_city = path[i];
         end_city = path[i + 1];
+        cout << start_city << " " << end_city << endl;
         total_distance += distance_table[start_city][end_city];
     }
+    cout << "EVALUEATION OUT" << endl;
     return total_distance + distance_table[path[path.size() - 1]][path[0]];
+}
+
+void evaluateset(vector<vector<double>> &distance_table, vector<vector<int>> &geneset, vector<double> &valueset)
+{
+    for (int i = 0; i < valueset.size(); i++)
+    {
+        valueset[i] = evaluate(distance_table, geneset[i]);
+    }
 }
 
 void initpath(vector<int> &path)
@@ -58,4 +69,25 @@ void swap(int &x, int &y)
     x ^= y;
     y ^= x;
     x ^= y;
+}
+
+void showpath(vector<int> &path)
+{
+    for (int point : path)
+    {
+        cout << point << " ";
+    }
+    cout << endl;
+}
+
+void show_distance_table(vector<vector<double>> &distance_table)
+{
+    for (vector<double> list : distance_table)
+    {
+        for (double distance : list)
+        {
+            printf("%-4.2f ", distance);
+        }
+        cout << endl;
+    }
 }

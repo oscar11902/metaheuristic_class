@@ -103,12 +103,12 @@ int main(int argc, char *argv[])
                 switch (argv[i][0])
                 {
                 //Roaling Whell
-                case 'P':
-                    crossover_method = 0;
+                case 'R':
+                    selection_method = 0;
                     break;
                 //random
-                case 'C':
-                    crossover_method = 1;
+                case 'E':
+                    selection_method = 1;
                     break;
                 }
                 break;

@@ -19,7 +19,7 @@ int evaluate(vector<bool> bitstring)
     return counter;
 }
 
-void evaluateset(vector<vector<bool>> geneset , vector<int> &valueset){
+void evaluateset(vector<vector<bool>> &geneset , vector<int> &valueset){
     for(int i = 0 ; i < valueset.size() ; i++){
             valueset[i] = evaluate(geneset[i]);
         }
