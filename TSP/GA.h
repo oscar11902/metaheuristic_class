@@ -26,9 +26,9 @@ public:
     void mutation();
     void selection_roulette();
     void selection_random();
-    void crossover_PMX();
-    void crossover_CX();
-    void crossover_OX();
+    vector<int> crossover_PMX(vector<int> &path1, vector<int> &path2);
+    vector<int> crossover_CX(vector<int> &path1, vector<int> &path2);
+    vector<int> crossover_OX(vector<int> &path1, vector<int> &path2);
 };
 
 #endif

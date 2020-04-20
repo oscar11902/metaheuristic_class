@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
     //Common
     int runs = 30, iterators = 1000;
     double avgresult = 0.0;
-    int algorithm = 0;
+    int algorithm = 1;
     int population = 20;
     double result = 0.0;
     vector<vector<double>> distance_table;
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     vector<double> x, y;
     //GA
     int crossover_method = 0;
-    int selection_method = 0;
+    int selection_method = 1;
     double mutation = 0.05;
     double crossover = 0.4;
     srand(time(NULL));

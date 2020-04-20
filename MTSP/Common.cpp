@@ -20,31 +20,6 @@ double evaluate(vector<vector<double>> &distance_table, vector<int> &path)
     return total_distance + distance_table[path[path.size() - 1]][path[0]];
 }
 
-void evaluateset(vector<vector<double>> &distance_table, vector<vector<int>> &geneset, vector<double> &valueset)
-{
-    for (int i = 0; i < valueset.size(); i++)
-    {
-        valueset[i] = evaluate(distance_table, geneset[i]);
-    }
-}
-
-void initpath(vector<int> &path)
-{
-    int nCities = path.size();
-    vector<bool> visited_Cities(nCities, false);
-    int random_City;
-    for (int i = 0; i < nCities; i++)
-    {
-        random_City = rand() % nCities;
-        while (visited_Cities[random_City])
-        {
-            random_City = (random_City + 1) % nCities;
-        }
-        visited_Cities[random_City] = true;
-        path[i] = random_City;
-    }
-}
-
 vector<vector<double>> create_distance_table(vector<double> &x, vector<double> &y)
 {
     vector<vector<double>> distance_table;
@@ -77,6 +52,15 @@ void showpath(vector<int> &path)
     cout << endl;
 }
 
+void showpath(vector<bool> &path)
+{
+    for (bool point : path)
+    {
+        cout << point << " ";
+    }
+    cout << endl;
+}
+
 void show_distance_table(vector<vector<double>> &distance_table)
 {
     for (vector<double> list : distance_table)
@@ -89,20 +73,16 @@ void show_distance_table(vector<vector<double>> &distance_table)
     }
 }
 
-void city_overwirte_check(vector<int> &path)
+bool city_visit_check(vector<bool> &cities)
 {
-    int length = path.size();
-    vector<bool> check_list(length);
-    for (int n : path)
+    int length = cities.size();
+    int sum = 0;
+    for (bool n : cities)
     {
-        if (!check_list[n])
-            check_list[n] = true;
-        else
-        {
-            cout << "path error" << endl;
-            break;
-        }
+        if (n)
+            sum++;
     }
+    return length == sum;
 }
 
 void showallpath(vector<vector<int>> &pathset)

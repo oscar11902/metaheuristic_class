@@ -2,15 +2,15 @@
 
 using namespace std;
 
-double GA::exe(vector<vector<double>> distance_table, double mutation_rate, double crossover, int selection_method, int crossover_method, int runs, int iterators, int population)
+double GA::exe(vector<vector<double>> distance_table, double mutation_rate, double crossover_rate, int selection_method, int crossover_method, int runs, int iterators, int population)
 {
-    cout << "Into GA" << endl;
+    //cout << "Into GA" << endl;
     double result = 0.0;
     int round = runs;
     this->population = population;
     this->distance_table = distance_table;
     this->mutation_rate = mutation_rate;
-    this->crossover_rate = crossover;
+    this->crossover_rate = crossover_rate;
     this->selection_method = selection_method;
     this->crossover_method = crossover_method;
 
@@ -29,7 +29,8 @@ double GA::exe(vector<vector<double>> distance_table, double mutation_rate, doub
             initpath(geneset[i]);
         }
         distanceset.resize(population, 0.0);
-        cout << "INIT FINISHED" << endl;
+        evaluateset(distance_table, geneset, distanceset);
+        //cout << "INIT FINISHED" << endl;
 
         while (time--)
         {
@@ -42,28 +43,9 @@ double GA::exe(vector<vector<double>> distance_table, double mutation_rate, doub
                 selection_random();
                 break;
             }
-            cout << "SELECTION FINISHED" << endl;
-            showpath(geneset[0]);
-            switch (crossover_method)
-            {
-            case 0:
-                crossover_PMX();
-                break;
-            case 1:
-                crossover_CX();
-                break;
-            case 2:
-                crossover_OX();
-                break;
-            }
-
-            cout << "CROSSOVER FINISHED" << endl;
-            showpath(geneset[0]);
+            crossover();
             mutation();
-            cout << "MUTATION FINISHED" << endl;
-            showpath(geneset[0]);
             evaluateset(distance_table, geneset, distanceset);
-            cout << "EVALUEATION FINISHED" << endl;
         }
 
         for (double value : distanceset)
@@ -83,7 +65,7 @@ void GA::selection_roulette()
     double sum = 0.0;
     for (double value : distanceset)
     {
-        sum += 1 / value;
+        sum += (1 / value);
     }
     for (int i = 0; i < population; i++)
     {
@@ -108,151 +90,149 @@ void GA::selection_roulette()
 }
 void GA::selection_random()
 {
-    cout << "INTO SELECTION" << endl;
     vector<vector<int>> new_geneset;
     for (int i = 0; i < population; i++)
     {
         int min_index = -1;
         int min_value = INT32_MAX;
-        cout << "BAD ALLOC" << endl;
-        vector<bool> check_point(nCities, false);
+        vector<bool> check_point(population, false);
         for (int j = 0; j < 3; j++)
         {
-            int index = random() % nCities;
+            int index = rand() % population;
             while (check_point[index])
             {
-                index = random() % nCities;
+                index = rand() % population;
             }
             check_point[index] = true;
             if (min_value > distanceset[index])
             {
                 min_value = distanceset[index];
-                min_value = index;
+                min_index = index;
             }
         }
         new_geneset.push_back(geneset[min_index]);
     }
     geneset.clear();
     geneset = new_geneset;
-    cout << "GET OUT FROM SELECTION" << endl;
 }
-void GA::crossover_PMX()
+
+void GA::crossover()
 {
+
     for (int i = 0; i < geneset.size(); i += 2)
     {
         if (random_ratio() < crossover_rate)
         {
-            //隨機產生兩個位置
-            int point1 = rand() % nCities, point2 = rand() % nCities;
-            //排序
-            cout << point1 << " " << point2 <<endl;
-            if (point1 > point2)
-                swap(point1, point2);
-            cout << point1 << " " << point2 <<endl;
             vector<int> tmp1, tmp2;
-            //紀錄需要對調的城市
-            for (int index = point1; index <= point2; index++)
+            switch (crossover_method)
             {
-                tmp1.push_back(geneset[i][index]);
-                tmp2.push_back(geneset[i + 1][index]);
-                swap(geneset[i][index], geneset[i + 1][index]);
+            case 0:
+                tmp1 = crossover_PMX(geneset[i], geneset[i + 1]);
+                tmp2 = crossover_PMX(geneset[i + 1], geneset[i]);
+                break;
+            case 1:
+                tmp1 = crossover_CX(geneset[i], geneset[i + 1]);
+                tmp2 = crossover_CX(geneset[i + 1], geneset[i]);
+                break;
+            case 2:
+                tmp1 = crossover_OX(geneset[i], geneset[i + 1]);
+                tmp2 = crossover_OX(geneset[i + 1], geneset[i]);
+                break;
             }
-            //記錄城市的連結
-            vector<int> number_position(nCities, -1);
-            vector<vector<int>> linked_list;
-            for (int i = 0; i < tmp1.size(); i++)
-            {
-                int key = tmp1[i];
-                int index = i;
-                vector<int> tmp_list;
-                while (number_position[key] == -1)
-                {
-                    tmp_list.push_back(key);
-                    number_position[key] = linked_list.size();
-                    key = tmp2[index];
-                    for (int i = 0; i < tmp1.size(); i++)
-                    {
-                        if (key == tmp1[i])
-                        {
-                            index = i;
-                            break;
-                        }
-                    }
-                }
-                linked_list.push_back(tmp_list);
-                tmp_list.clear();
-            }
-            //更換重複的
-            for (int index = point2 + 1; index < nCities + point1; index++)
-            {
-                int key = geneset[i][index % nCities];
-                int list_index = number_position[key];
-                if (list_index != -1)
-                {
-                    int list_length = linked_list[list_index].size();
-                    for (int j = 0; j < list_length; j++)
-                    {
-                        if (linked_list[list_index][j] == key)
-                        {
-                            geneset[i][index % nCities] = linked_list[list_index][(j + 1) % list_length];
-                        }
-                    }
-                }
-            }
-            for (int index = point2 + 1; index < nCities + point1; index++)
-            {
-                int key = geneset[i + 1][index % nCities];
-                int list_index = number_position[key];
-                if (list_index != -1)
-                {
-                    int list_length = linked_list[list_index].size();
-                    for (int j = 0; j < list_length; j++)
-                    {
-                        if (linked_list[list_index][j] == key)
-                        {
-                            geneset[i + 1][index % nCities] = linked_list[list_index][(j + 1) % list_length];
-                        }
-                    }
-                }
-            }
+            geneset[i] = tmp1;
+            geneset[i + 1] = tmp2;
         }
     }
 }
-void GA::crossover_CX()
+
+vector<int> GA::crossover_PMX(vector<int> &path1, vector<int> &path2)
 {
-    for (int i = 0; i < geneset.size(); i += 2)
+    vector<int> child(nCities, -1);
+    int point1 = rand() % nCities, point2 = rand() % nCities;
+    if (point1 > point2)
+        swap(point1, point2);
+    for (int index = point1; index < point2; index++)
     {
-        if (random_ratio() < crossover_rate)
+        child[index] = path1[index];
+    }
+    for (int index = point1; index < point2; index++)
+    {
+        int V = path2[index];
+        int V_index_in_child = -1;
+        int index_in_path2 = -1;
+        //尋找path2在範圍內是否有不在child中的值
+        V_index_in_child = is_in_path(child, V);
+        if (V_index_in_child == -1)
         {
-            int point1 = rand() % nCities, point2 = rand() % nCities;
-            if (point1 > point2)
-                swap(point1, point2);
-            vector<int> tmp1, tmp2;
-            for (int index = point1; index <= point2; index++)
+            index_in_path2 = is_in_path(path2, path1[index]);
+            while (point1 <= index_in_path2 && index_in_path2 < point2)
             {
-                tmp1.push_back(geneset[i][index]);
-                tmp2.push_back(geneset[i + 1][index]);
+                index_in_path2 = is_in_path(path2, path1[index_in_path2]);
             }
+            child[index_in_path2] = V;
         }
     }
+    for (int i = 0; i < nCities; i++)
+    {
+        if (child[i] == -1)
+            child[i] = path2[i];
+    }
+    return child;
 }
-void GA::crossover_OX()
+vector<int> GA::crossover_CX(vector<int> &path1, vector<int> &path2)
 {
-    for (int i = 0; i < geneset.size(); i += 2)
+    vector<int> child(nCities, -1);
+    int index = rand() % nCities;
+    while (is_in_path(child, path1[index]) == -1)
     {
-        if (random_ratio() < crossover_rate)
+        child[index] = path2[index];
+        index = is_in_path(path1, child[index]);
+    }
+    int key = 0;
+    for (int i = 0; i < nCities; i++)
+    {
+        if (is_in_path(child, path2[i]) == -1)
         {
-            int point1 = rand() % nCities, point2 = rand() % nCities;
-            if (point1 > point2)
-                swap(point1, point2);
-            vector<int> tmp1, tmp2;
-            for (int index = point1; index <= point2; index++)
+            for (int j = key; j < nCities; j++)
             {
-                tmp1.push_back(geneset[i][index]);
-                tmp2.push_back(geneset[i + 1][index]);
+                if (child[j] == -1)
+                {
+                    child[j] = path2[i];
+                    key = j+1;
+                    break;
+                }
             }
         }
     }
+    return child;
+}
+vector<int> GA::crossover_OX(vector<int> &path1, vector<int> &path2)
+{
+    vector<int> child(nCities, -1);
+    int point1 = rand() % nCities, point2 = rand() % nCities;
+    if (point1 > point2)
+        swap(point1, point2);
+    for (int index = point1; index < point2; index++)
+    {
+        child[index] = path1[index];
+    }
+    int key = 0;
+    for (int i = 0; i < nCities; i++)
+    {
+        if (is_in_path(child, path2[i]) == -1)
+        {
+            for (int j = key; j < nCities; j++)
+            {
+                if (child[j] == -1)
+                {
+                    child[j] = path2[i];
+                    key++;
+                    break;
+                }
+            }
+        }
+    }
+    return child;
 }
 void GA::mutation()
 {
@@ -263,9 +243,9 @@ void GA::mutation()
             int point1 = rand() % nCities, point2 = rand() % nCities;
             if (point1 > point2)
                 swap(point1, point2);
-            for (int index = 0; index < ((point1 + point2) / 2 - point1); index++)
+            for (int index = 0; index < ((point2 - point1) / 2); index++)
             {
-                swap(geneset[point1 + index], geneset[point2 - index]);
+                swap(geneset[i][point1 + index], geneset[i][point2 - index]);
             }
         }
     }
