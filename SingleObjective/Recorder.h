@@ -12,7 +12,7 @@ class Recorder{
     public:
         vector<double> record;
         Recorder(int iteration);
-        void to_file(string filename = "record.txt");
+        void to_file(string filename);
         void cal_result(int run);
         double get_result();
 };

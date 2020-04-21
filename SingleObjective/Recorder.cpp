@@ -18,7 +18,7 @@ void Recorder::to_file(string filename = "record.txt"){
 
 }
 void Recorder::cal_result(int run){
-    for(int i = 0 ; i < record.size ; i++){
+    for(int i = 0 ; i < record.size() ; i++){
         record[i] /= run;
     }
 }
